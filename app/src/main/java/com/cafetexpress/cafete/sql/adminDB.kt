@@ -15,16 +15,17 @@ class adminDB (context: Context): SQLiteOpenHelper(context,
         db?.execSQL(
             "Create Table usuario("+
                     "ncontrol Text Primary Key," +
-                    "nombre Text," +
                     "carrera text," +
+                    "nombre Text," +
                     "password text)"
         )
         db?.execSQL(
             "Create Table producto(" +
-                    "id Integer Primary Key," +
+                    "id_producto Integer Primary Key," +
                     "nombre Text," +
                     "cantidad integer," +
-                    "precio integer)"
+                    "precio integer," +
+                    "tiempo text)"
         )
     }
     //función para llamar ejecutar un insert,update o delete
@@ -39,10 +40,10 @@ class adminDB (context: Context): SQLiteOpenHelper(context,
         }
     }
     //funcón para hacer consultas
-    fun consulta(query: String): Cursor?{
+    fun consulta(select: String): Cursor?{
         try {
             val db = this.readableDatabase
-            return db.rawQuery(query,null)
+            return db.rawQuery(select,null)
         }catch (ex:Exception){
             return null
         }

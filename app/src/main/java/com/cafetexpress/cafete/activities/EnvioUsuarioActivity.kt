@@ -1,12 +1,13 @@
-package com.cafetexpress.cafete
+package com.cafetexpress.cafete.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.cafetexpress.cafete.R
 
-class Recycler_usuario_Activity : AppCompatActivity() {
+class EnvioUsuarioActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recycler_usuario_)
+        setContentView(R.layout.activity_envio_usuario)
     }
 }

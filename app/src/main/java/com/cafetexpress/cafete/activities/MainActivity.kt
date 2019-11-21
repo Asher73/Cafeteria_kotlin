@@ -1,8 +1,11 @@
-package com.cafetexpress.cafete
+package com.cafetexpress.cafete.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import com.cafetexpress.cafete.R
+import com.cafetexpress.cafete.recycler.Recycler_producto_Activity
 import com.cafetexpress.cafete.sql.adminDB
 
 class MainActivity : AppCompatActivity() {
@@ -12,20 +15,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val actividad = intent
-        if(actividad != null && actividad.hasExtra("ncontrol") && actividad.hasExtra("nip")){
+        if(actividad != null && actividad.hasExtra("ncontrol") && actividad.hasExtra("password")){
             scontrol = actividad.getStringExtra("ncontrol")
-            snip = actividad.getStringExtra("nip")
+            snip = actividad.getStringExtra("password")
         }else{
             val admin = adminDB(this)
-            val result = admin.consulta("Select ncontrol,password From usuario")
+            val result = admin.consulta("Select ncontrol, password From usuario")
             if(result!!.moveToFirst()){
                 scontrol = result.getString(0)
                 snip = result.getString(1)
                 result.close()
                 admin.close()
-            }else{
-                startActivity(Intent(this,LoginActivity::class.java))
-            }
+            }else startActivity(Intent(this, LoginActivity::class.java))
         }
     }
 }
