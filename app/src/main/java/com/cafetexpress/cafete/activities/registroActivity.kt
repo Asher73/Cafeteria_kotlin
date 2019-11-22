@@ -4,22 +4,26 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Spinner
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.cafetexpress.cafete.R
+import com.cafetexpress.cafete.address.address
 import com.cafetexpress.cafete.sql.adminDB
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_registro.*
 import org.json.JSONObject
 
+
 class registroActivity : AppCompatActivity() {
 
-    val wsInsertar = "http://192.168.1.68/servicescafe/user/InsertarAlumno.php"
+    val wsInsertar = address.IP + "servicescafe/user/InsertarAlumno.php"
 
     var ncontrol:String=""
-    var carrera:String=""
+    //var carrera:String=""
+    private var spinnercarrera: Spinner? = null
     var nombre:String=""
     var pwd:String=""
     var pwd2:String=""
@@ -29,8 +33,13 @@ class registroActivity : AppCompatActivity() {
         setContentView(R.layout.activity_registro)
         supportActionBar!!.hide()
 
+        spinnercarrera = findViewById(R.id.spinnercarrera) as Spinner
+
         etncontrol.requestFocus()
         btnregistro.setOnClickListener {
+
+            val carrera = spinnercarrera?.selectedItem.toString()
+
             if (etncontrol.text!!.isEmpty()) {
                 //Toast.makeText(this, "No. de control requerido", Toast.LENGTH_SHORT).show()
                 Snackbar.make(root_layout, "No. de control requerido", Snackbar.LENGTH_SHORT).show()
@@ -41,11 +50,11 @@ class registroActivity : AppCompatActivity() {
                 Snackbar.make(root_layout, "Ingrese nombre", Snackbar.LENGTH_SHORT).show()
                 etnombre.requestFocus()
 
-            } else if (etcarrera.text!!.isEmpty()) {
+            } else if (carrera=="Carrera") {
                 //Toast.makeText(this, "Ingrese carrera", Toast.LENGTH_SHORT).show()
-                Snackbar.make(root_layout, "Ingrese carrera", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(root_layout, "Seleccione carrera", Snackbar.LENGTH_SHORT).show()
 
-                etcarrera.requestFocus()
+                //etcarrera.requestFocus()
 
             } else if (etpsw.text!!.isEmpty()) {
                 //Toast.makeText(this, "Ingrese una contraseña", Toast.LENGTH_SHORT).show()
@@ -56,7 +65,8 @@ class registroActivity : AppCompatActivity() {
                 Snackbar.make(root_layout, "Confirme su contraseña", Snackbar.LENGTH_SHORT).show()
 
                 etpsw2.requestFocus()
-            }
+            }else{
+
             getValues() //funcion que obtiene los valores de las cajas de texto
             if(pwd == pwd2){
 
@@ -74,6 +84,7 @@ class registroActivity : AppCompatActivity() {
             }
             else {
                 Snackbar.make(root_layout, "Las contraseñas no coinciden", Snackbar.LENGTH_SHORT).show()
+            }
             }
 
                 /*if (pwd == pw2) {
@@ -119,19 +130,19 @@ class registroActivity : AppCompatActivity() {
 
     fun getValues(){
         ncontrol = etncontrol.text.toString()
-        carrera = etcarrera.text.toString()
+        //carrera = etcarrera.text.toString()
         nombre = etnombre.text.toString()
         pwd = etpsw.text.toString()
         pwd2 = etpsw2.text.toString()
     }
     fun clearFields(){
         ncontrol=""
-        carrera=""
+        //carrera=""
         nombre=""
         pwd=""
         pwd2=""
         etncontrol.setText("")
-        etcarrera.setText("")
+        //etcarrera.setText("")
         etnombre.setText("")
         etpsw.setText("")
         etpsw2.setText("")

@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -61,13 +62,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etcarrera"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_action_carrera"
-                    android:hint="Carrera"
-                    android:inputType="text" />
+                <Spinner
+                    android:id="@+id/spinnercarrera"
+                    android:layout_width="222dp"
+                    android:layout_height="55dp"
+                    android:background="@drawable/shape_carrera"
+                    android:entries="@array/carrera"
+                    android:isScrollContainer="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:layout_editor_absoluteY="107dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

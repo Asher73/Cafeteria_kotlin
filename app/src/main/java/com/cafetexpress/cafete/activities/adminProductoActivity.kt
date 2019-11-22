@@ -3,15 +3,25 @@ package com.cafetexpress.cafete.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.cafetexpress.cafete.R
+import com.cafetexpress.cafete.address.address
 import com.cafetexpress.cafete.recycler.Recycler_producto_Activity
 import com.cafetexpress.cafete.sql.adminDB
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_admin_producto.*
 import kotlinx.android.synthetic.main.activity_registro.*
+import org.json.JSONObject
 
 class adminProductoActivity : AppCompatActivity() {
+
+    val wsInsertar = address.IP + "servicescafe/user/InsertarProducto.php"
+
     var id: Int = 0
     var nombre: String = ""
     var precio: Double = 0.0
@@ -70,7 +80,18 @@ class adminProductoActivity : AppCompatActivity() {
             precio = etPrecio.text.toString().toDouble()
             cantidad = etCantidad.text.toString().toInt()
             tiempo = etTiempo.text.toString()
-            val sentencia =
+
+            var jsonEntrada = JSONObject()
+
+            jsonEntrada.put("nombre", nombre)
+            jsonEntrada.put("cantidad",cantidad)
+            jsonEntrada.put("precio", precio)
+            jsonEntrada.put("tiempo",tiempo)
+
+            sendRequest(wsInsertar,jsonEntrada)
+
+            clearbox()
+            /*val sentencia =
                 "Insert Into producto(nombre, precio, cantidad, tiempo) Values('$nombre',$precio,$cantidad,'$tiempo')"
             val admin = adminDB(this)
             if (admin.Ejecuta(sentencia)) {
@@ -79,7 +100,7 @@ class adminProductoActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "No se agrego el producto", Toast.LENGTH_SHORT).show();
                 etNombre.requestFocus()
-            }
+            }*/
 
         }
     }
@@ -125,6 +146,31 @@ class adminProductoActivity : AppCompatActivity() {
     fun Consultar(v: View){
         var actividad = Intent(this,Recycler_producto_Activity::class.java)
         startActivity(actividad)
+    }
+
+    fun sendRequest(wsUrl:String, jsonEntrada: JSONObject) {
+
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, wsUrl, jsonEntrada,
+            Response.Listener { response ->
+                val succ = response["success"]
+                val msg = response["message"]
+                Toast.makeText(this, "Success: ${succ} Message:${msg} ", Toast.LENGTH_LONG).show();
+                //Snackbar.make(root_layout,"Success: $succ Message:$msg",Snackbar.LENGTH_LONG).show()
+
+
+                //startActivity(Intent(this, LoginActivity::class.java))
+            },
+            Response.ErrorListener { error ->
+                Snackbar.make(root_layout,"${error.message}", Snackbar.LENGTH_SHORT).show()
+                //Toast.makeText(this, "${error.message}", Toast.LENGTH_LONG).show();
+                Log.d("ERROR", "${error.message}")
+                Snackbar.make(root_layout,"Error Capa 8 WS u.u", Snackbar.LENGTH_SHORT).show()
+                //Toast.makeText(this, "API: Error de capa 8 WS):", Toast.LENGTH_LONG).show();
+            }
+        )
+        //Es para agregar las peticiones a la cola
+        VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
     }
 
 

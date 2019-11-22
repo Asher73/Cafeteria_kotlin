@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">CAFETExpress</string>
+    <array name="carrera">
+        <item>Carrera</item>
+        <item>Gestión Empresarial</item>
+        <item>Tic´s</item>
+        <item>Agronomía</item>
+        <item>Ind. Alimentarias</item>
+        <item>Inovación A.</item>
+        <item>Hidrológica</item>
+    </array>
 </resources>
