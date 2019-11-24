@@ -23,6 +23,7 @@ class Recycler_producto_Activity : AppCompatActivity() {
 
         adapter.setList(ListaProd())
     }
+    
     fun ListaProd():List<productos>{
         var prod = ArrayList<productos>()
         val database = adminDB(this)
