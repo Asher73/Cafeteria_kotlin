@@ -85,6 +85,7 @@ class registroActivity : AppCompatActivity() {
             else {
                 Snackbar.make(root_layout, "Las contraseñas no coinciden", Snackbar.LENGTH_SHORT).show()
             }
+
             }
 
                 /*if (pwd == pw2) {

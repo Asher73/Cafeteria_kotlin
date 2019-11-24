@@ -1,10 +1,13 @@
 package com.cafetexpress.cafete.adapters
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.cafetexpress.cafete.R
 import com.cafetexpress.cafete.model.productos
@@ -29,9 +32,17 @@ class AdapterProducto internal constructor(
         holder.edPrecio.text = "$" + current.precio.toString()
         holder.edCantidad.text = current.cantidad.toString()
         holder.edTiempo.text = current.tiempo
+
+        /*var intent = Intent(inflater.context, PruebaActivity::class.java)
+
+        holder.card.setOnClickListener{
+            val context=inflater.context as Activity
+            context.startActivity(intent)
+        }*/
     }
 
     inner class ProductosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val card: CardView = itemView.findViewById(R.id.card_producto)
         val edId: TextView = itemView.findViewById(R.id.tvID)
         val edNombre: TextView = itemView.findViewById(R.id.tvNombre)
         val edPrecio: TextView = itemView.findViewById(R.id.tvPrecio)

@@ -3,7 +3,6 @@
     android:id="@+id/card_producto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     card_view:cardCornerRadius="5dp">
 
 
@@ -12,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border_card"
         android:orientation="vertical"
-        android:padding="13dp">
+        android:padding="30dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="ID"
-                android:textColor="@color/colorTextHint" />
+                android:textColor="@color/colorTextHint"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvID"

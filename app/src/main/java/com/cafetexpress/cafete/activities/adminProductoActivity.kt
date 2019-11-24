@@ -1,11 +1,13 @@
 package com.cafetexpress.cafete.activities
 
 import android.content.Intent
+import android.location.Address
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -21,6 +23,10 @@ import org.json.JSONObject
 class adminProductoActivity : AppCompatActivity() {
 
     val wsInsertar = address.IP + "servicescafe/user/InsertarProducto.php"
+    val wsActualizar = address.IP + "servicescafe/user/ActualizarProducto.php"
+    val wsEliminar = address.IP + "servicescafe/user/BorrarProducto.php"
+    val wsConsultaP = address.IP + "servicescafe/user/MostrarProducto.php"
+    val wsConsultaPs = address.IP + "servicescafe/user/MostrarProductos.php"
 
     var id: Int = 0
     var nombre: String = ""
@@ -38,25 +44,35 @@ class adminProductoActivity : AppCompatActivity() {
             Toast.makeText(this, "Ingrese el id del producto a buscar", Toast.LENGTH_SHORT).show()
             etID.requestFocus()
         } else {
-            id = etID.text.toString().toInt()
-            val admin = adminDB(this)
-            val tupla =
-                admin.consulta("Select id_producto, nombre, precio, cantidad, tiempo From producto WHERE id_producto=$id")
-            if (tupla!!.moveToFirst()) {
-                etNombre.setText(tupla.getString(1))
-                etPrecio.setText(tupla.getString(2))
-                etCantidad.setText(tupla.getString(3))
-                etTiempo.setText(tupla.getString(4))
-                btnAgregar.isEnabled = false
-                btnActualizar.isEnabled = true
-                btnEliminar.isEnabled = true
+            var jsonEntrada = JSONObject()
+            jsonEntrada.put("id_producto", etID.text.toString())
+            getProductoByID(jsonEntrada)
+            btnAgregar.isEnabled = false
+            btnActualizar.isEnabled = true
+            btnEliminar.isEnabled = true
 
-            } else {
-                Toast.makeText(this, "No se exite el producto", Toast.LENGTH_SHORT).show()
-                etID.requestFocus()
-            }
         }
-    }
+
+        /*sendRequest(wsInsertar,jsonEntrada)
+
+        val admin = adminDB(this)
+        val tupla =
+            admin.consulta("Select id_producto, nombre, precio, cantidad, tiempo From producto WHERE id_producto=$id")
+        if (tupla!!.moveToFirst()) {
+            etNombre.setText(tupla.getString(1))
+            etPrecio.setText(tupla.getString(2))
+            etCantidad.setText(tupla.getString(3))
+            etTiempo.setText(tupla.getString(4))
+            btnAgregar.isEnabled = false
+            btnActualizar.isEnabled = true
+            btnEliminar.isEnabled = true
+
+        } else {
+            Toast.makeText(this, "No se exite el producto", Toast.LENGTH_SHORT).show()
+            etID.requestFocus()
+        }*/
+        }
+
 
     fun insertproducto(v: View) {
         if (etNombre.text!!.isEmpty()) {
@@ -110,7 +126,18 @@ class adminProductoActivity : AppCompatActivity() {
             Toast.makeText(this, "Falta informacion del producto", Toast.LENGTH_SHORT).show()
             etID.requestFocus()
         } else {
-            readbox()
+
+            var jsonEntrada = JSONObject()
+            jsonEntrada.put("id_producto", etID.text.toString())
+            jsonEntrada.put("nombre", etNombre.text.toString())
+            jsonEntrada.put("cantidad", etCantidad.text.toString())
+            jsonEntrada.put("precio", etPrecio.text.toString())
+            jsonEntrada.put("tiempo", etTiempo.text.toString())
+            sendRequest(wsActualizar, jsonEntrada)
+            clearbox()
+            etID.requestFocus()
+
+            /*readbox()
             val sentencia =
                 "UPDATE producto SET nombre='$nombre',precio=$precio, cantidad=$cantidad, tiempo='$tiempo' WHERE id_producto=$id"
             val admin = adminDB(this)
@@ -120,7 +147,7 @@ class adminProductoActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "No se actualizó el producto", Toast.LENGTH_SHORT).show()
                 etID.requestFocus()
-            }
+            }*/
         }
     }
 
@@ -129,7 +156,12 @@ class adminProductoActivity : AppCompatActivity() {
             Toast.makeText(this, "Producto no registrado o falta información", Toast.LENGTH_SHORT).show();
             etID.requestFocus()
         } else {
-            readbox()
+            var jsonEntrada = JSONObject()
+            jsonEntrada.put("id_producto", etID.text.toString().toInt())
+            sendRequest(wsEliminar, jsonEntrada)
+            clearbox()
+            etID.requestFocus()
+            /*readbox()
             val sentencia = "DELETE FROM producto WHERE id_producto=$id"
             val admin = adminDB(this)
             if (admin.Ejecuta(sentencia)) {
@@ -138,15 +170,49 @@ class adminProductoActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "No se eliminó el producto", Toast.LENGTH_SHORT).show();
                 etID.requestFocus()
-            }
+            }*/
 
         }
     }
 
     fun Consultar(v: View){
-        var actividad = Intent(this,Recycler_producto_Activity::class.java)
-        startActivity(actividad)
+        getAllProductos()
+
     }
+
+    fun getAllProductos(){
+        val admin = adminDB(this)
+        admin.Ejecuta("DELETE FROM producto")
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST,wsConsultaPs,null,
+            Response.Listener { response ->
+                val succ= response["success"]
+                val msg = response["message"]
+                val productosJson = response.getJSONArray("producto")
+                for(i in 0 until productosJson.length()){
+                    val id_p = productosJson.getJSONObject(i).getInt("id_producto")
+                    val nom = productosJson.getJSONObject(i).getString("nombre")
+                    val cant = productosJson.getJSONObject(i).getInt("cantidad")
+                    val prec = productosJson.getJSONObject(i).getDouble("precio")
+                    val tiem = productosJson.getJSONObject(i).getString("tiempo")
+                    val sentencia = "Insert into producto(id_producto,nombre,cantidad ,precio, tiempo) values(${id_p},'${nom}', ${cant}, ${prec}, ${tiem})"
+                    var res =admin.Ejecuta(sentencia)
+                    Toast.makeText(this, "jelou "+ res, Toast.LENGTH_SHORT).show()
+                }
+                var actividad = Intent(this,Recycler_producto_Activity::class.java)
+                startActivity(actividad)
+            },
+            Response.ErrorListener { error ->
+                Toast.makeText(this, "Error getProductoBtID: ${error.message}", Toast.LENGTH_LONG).show();
+            }
+        )
+
+        VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
+
+
+    }
+
+
 
     fun sendRequest(wsUrl:String, jsonEntrada: JSONObject) {
 
@@ -200,4 +266,31 @@ class adminProductoActivity : AppCompatActivity() {
         etID.requestFocus()
 
     }
+
+fun getProductoByID(jsonEnt:JSONObject){
+    val jsonObjectRequest = JsonObjectRequest(
+        Request.Method.POST,wsConsultaP,jsonEnt,
+        Response.Listener { response ->
+            val succ= response["success"]
+            val msg = response["message"]
+            val productosJson = response.getJSONArray("producto")
+            if (productosJson .length()>0){
+                val idp = productosJson.getJSONObject(0).getInt("id_producto").toString()
+                val nom = productosJson.getJSONObject(0).getString("nombre")
+                val cant = productosJson.getJSONObject(0).getInt("cantidad").toString()
+                val prec = productosJson.getJSONObject(0).getDouble("precio").toString()
+                val tiem = productosJson.getJSONObject(0).getString("tiempo")
+                etNombre.setText(nom)
+                etCantidad.setText(cant)
+                etPrecio.setText(prec)
+                etTiempo.setText(tiem)
+                etID.requestFocus()
+            }
+        },
+        Response.ErrorListener { error ->
+            Toast.makeText(this, "Error getProductoByID: ${error.message}", Toast.LENGTH_LONG).show();
+        }
+    )
+    VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
+}
 }

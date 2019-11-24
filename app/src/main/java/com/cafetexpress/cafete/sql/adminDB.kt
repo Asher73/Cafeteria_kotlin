@@ -24,7 +24,7 @@ class adminDB (context: Context): SQLiteOpenHelper(context,
                     "id_producto Integer Primary Key," +
                     "nombre Text," +
                     "cantidad integer," +
-                    "precio integer," +
+                    "precio double," +
                     "tiempo text)"
         )
     }

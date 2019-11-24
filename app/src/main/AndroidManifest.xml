@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cafetexpress.cafete">
-    <uses-permission android:name="android.permission.INTERNET">
-    </uses-permission>
+
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activities.EnvioUsuarioActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".PruebaActivity"></activity>
+        <activity android:name=".activities.EnvioUsuarioActivity" />
         <activity android:name=".recycler.Recycler_producto_Activity" />
         <activity android:name=".activities.adminProductoActivity" />
         <activity android:name=".activities.adminActivity" />
